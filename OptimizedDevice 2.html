@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Cấu hình & menu 6 chức năng</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: black;
+            color: white;
+            font-family: 'Poppins', sans-serif;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .login-container {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 0 15px rgba(255, 0, 0, 0.6);
+            width: 300px;
+        }
+
+        .login-container input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 5px;
+        }
+
+        .login-container button {
+            width: 100%;
+            padding: 10px;
+            background: red;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .login-container button:hover {
+            background: darkred;
+        }
+
+        .container {
+            display: none;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            border-radius: 10px;
+            width: 300px;
+            text-align: center;
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.6);
+        }
+
+        .status {
+            font-size: 20px;
+            color: cyan;
+        }
+
+        .online {
+            color: #0ff;
+            font-weight: bold;
+        }
+
+        .time {
+            font-size: 14px;
+            color: #bbb;
+        }
+
+        .options {
+            margin-top: 10px;
+            text-align: left;
+        }
+
+        .options label {
+            display: flex;
+            justify-content: space-between;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 8px;
+            margin: 5px 0;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 40px;
+            height: 20px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: red;
+            transition: 0.3s;
+            border-radius: 20px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 2px;
+            bottom: 2px;
+            background-color: white;
+            transition: 0.3s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: limegreen;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(20px);
+        }
+
+        .footer {
+            margin-top: 10px;
+            font-size: 16px;
+            color: cyan;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="snowCanvas"></canvas>
+
+    <!-- Đăng nhập -->
+    <div class="login-container" id="loginPage">
+        <h2><i>OptimizedPhone</i></h2>
+        <h3><i>ThanhHoang🐸</i></h3>
+        <input type="password" id="password" placeholder="Nhập mật khẩu">
+        <button onclick="login()">Login</button>
+    </div>
+
+    <!-- Giao diện chính -->
+    <div class="container" id="homePage">
+        <h2 class="status">Trạng thái: <span class="online">Online</span></h2>
+        <p class="time">Thời gian: <span id="time"></span></p>
+
+        <div class="options">
+            <label>Aimlock 
+                <div class="toggle-switch">
+                    <input type="checkbox" onchange="toggleFeature(this, 'Aimlock')">
+                    <span class="slider"></span>
+                </div>
+            </label>
+            <label>Nhẹ Tâm V1 
+                <div class="toggle-switch">
+                    <input type="checkbox" onchange="toggleFeature(this, 'Nhẹ Tâm V1')">
+                    <span class="slider"></span>
+                </div>
+            </label>
+            <label>Optimize Config 
+                <div class="toggle-switch">
+                    <input type="checkbox" onchange="toggleFeature(this, 'Optimize Config')">
+                    <span class="slider"></span>
+                </div>
+            </label>
+            <label>Ghim Tâm 
+                <div class="toggle-switch">
+                    <input type="checkbox" onchange="toggleFeature(this, 'Ghim Tâm')">
+                    <span class="slider"></span>
+                </div>
+            </label>
+            <label>Buff DPI 
+                <div class="toggle-switch">
+                    <input type="checkbox" onchange="toggleFeature(this, 'Buff DPI')">
+                    <span class="slider"></span>
+                </div>
+            </label>
+            <label>120Hz 
+                <div class="toggle-switch">
+                    <input type="checkbox" onchange="toggleFeature(this, '120Hz')">
+                    <span class="slider"></span>
+                </div>
+            </label>
+        </div>
+
+        <p class="footer">ThanhHoang 🐸</p>
+    </div>
+
+    <script>
+        function login() {
+            let password = document.getElementById("password").value;
+            let correctPassword = "Thanhhoangdz";
+
+            if (password.trim() === correctPassword) {
+                alert("Đăng nhập thành công!");
+                setTimeout(() => {
+                    document.getElementById("loginPage").style.display = "none";
+                    document.getElementById("homePage").style.display = "block";
+                }, 500);
+            } else {
+                alert("Sai mật khẩu! Hệ thống sẽ thoát ngay lập tức.");
+                window.close();
+            }
+        }
+
+        function updateTime() {
+            const now = new Date();
+            document.getElementById("time").textContent = now.toLocaleTimeString("vi-VN");
+        }
+        setInterval(updateTime, 1000);
+        updateTime();
+
+        function toggleFeature(checkbox, featureName) {
+            alert(featureName + (checkbox.checked ? " đã bật!" : " đã tắt!"));
+        }
+
+        const canvas = document.getElementById("snowCanvas");
+        const ctx = canvas.getContext("2d");
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        let snowflakes = Array.from({ length: 100 }, () => ({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            radius: Math.random() * 4 + 1,
+            speedY: Math.random() * 3 + 1
+        }));
+
+        function drawSnow() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "white";
+            snowflakes.forEach(flake => {
+                ctx.beginPath();
+                ctx.arc(flake.x, flake.y, flake.radius, 0, Math.PI * 2);
+                ctx.fill();
+                flake.y = flake.y > canvas.height ? 0 : flake.y + flake.speedY;
+            });
+            requestAnimationFrame(drawSnow);
+        }
+        drawSnow();
+    </script>
+</body>
+</html>
+
